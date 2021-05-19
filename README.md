@@ -7,9 +7,7 @@ Maybe you are wondering the reason of making this, as there is already a install
 # Instalation
 To use this installer type this command into the command line `curl -L is.gd/archsh >> archlinode ; sh archlinode`.
 This will download the file, make it executable, clear the screen, and run the installer program.
-When it has finished picking your options and creating the install script, you can run it using the `./install` command.
-
-__IMPORTANT:__ <p>When you are installing, after Grub is installed, you will be asked to write your ethernet interface, then a file will be opened with nano, and in the option Interface you will need to put your ethernet interface</p>
+When it has finished picking your options and creating the install script, you can run it using the `./install` command. (If you use the command given to you on the past, it will run it when you pass in all the options needed)
 
 # How does this work
 This is based on this logic
