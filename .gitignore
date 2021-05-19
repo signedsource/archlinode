@@ -29,7 +29,10 @@ yarn.lock
 # Scripts
 run.sh
 run.bat
+
+# ArchLiNode Scripts
 install
+archln
 
 # License Files
 LICENSE

