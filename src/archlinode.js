@@ -91,7 +91,9 @@ const prompt = require("prompts"),
 				{ title: "DWM (Config credits: Antonio Sarosi)" },
 				{ title: "KDE" },
 				{ title: "Xfce" },
-				{ title: "GNOME" }
+				{ title: "GNOME" },
+				{ title: "XMonad" },
+				{ title: "Spectrwm" }
 			]
 		},
 		{
@@ -243,7 +245,9 @@ const prompt = require("prompts"),
 
 		switch (_.desktop) {
 			case 0:
-				await write(`arch-chroot /mnt pacman -S lxdm qtile --noconfirm`);
+				await write(`arch-chroot /mnt pacman -S lxdm qtile pacman-contrib --noconfirm`);
+				await write(`arch-chroot /mnt yay -S nerd-fonts-ubuntu-mono`);
+				await write(`arch-chroot /mnt pip install psutil`);
 				await write(`arch-chroot /mnt systemctl enable lxdm.service`);
 				break;
 			case 1:
@@ -270,12 +274,24 @@ const prompt = require("prompts"),
 				await write(`arch-chroot /mnt pacman -S gnome gdm --noconfirm`);
 				await write(`arch-chroot /mnt systemctl enable gdm.service`);
 				break;
+			case 5:
+				await write(`arch-chroot /mnt pacman -S lxdm xmonad xmonad-contrib xmobar trayer xdotool pacman-contrib brightnessctl pamixer upower --noconfirm`);
+				await write(`arch-chroot /mnt yay -S nerd-fonts-ubuntu-mono`)
+				await write(`arch-chroot /mnt systemctl enable lxdm.service`);
+				break;
+			case 6:
+				await write(`arch-chroot /mnt pacman -S lxdm spectrwm trayer upower pamixer brightnessctl pacman-contrib --noconfirm`);
+				await write(`arch-chroot /mnt yay -S nerd-fonts-ubuntu-mono`)
+				await write(`arch-chroot /mnt systemctl enable lxdm.service`);
+				break;
+			default:
+				break;
 		}
 		
 		await write(`curl -L is.gd/arlndpi >> postinstall`);
 		await write(`curl -L is.gd/arlnrb >> reboot`);
 		await write(`chmod +x reboot`);
-		await write(`arch-chroot /mnt pacman -S which feh ttf-dejavu ttf-liberation noto-fonts pulseaudio pavucontrol pamixer brightnessctl arandr udiskie ntfs-3g volumeicon cbatticon libnotify notification-daemon --noconfirm`);
+		await write(`arch-chroot /mnt pacman -S rofi thunar firefox alacritty redshift scrot which feh ttf-dejavu ttf-liberation noto-fonts pulseaudio pavucontrol pamixer brightnessctl arandr udiskie ntfs-3g volumeicon cbatticon libnotify notification-daemon --noconfirm`);
 		await write(`arch-chrot /mnt fc-cache -f -v`)
 		await write(`arch-chroot /mnt echo "[D-BUS Service]\nName=org.freedesktop.Notifications\nExec=/usr/lib/notification-daemon-1.0/notification-daemon" >> /usr/share/dbus-1/services/org.freedesktop.Notifications.service`)
 		await write(`arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/efi/ --bootloader-id=ArchLiNode`);
