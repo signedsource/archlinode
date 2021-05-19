@@ -2,6 +2,7 @@ BUILD_CMD=pkg -t linux -o
 RUN_CMD=node
 RM_CMD=rm -rf
 PACKAGER_CMD=yarn add
+BIN_FOLDER=bin/
 
 build:
 	$(BUILD_CMD) bin/archlinode src/archlinode.js
@@ -10,6 +11,10 @@ build:
 test:
 	$(RUN_CMD) src/archlinode.js
 	$(RUN_CMD) src/postinstall.js
+
+bintest:
+	$(BIN_FOLDER)archlinode
+	$(BIN_FOLDER)postinstall
 
 clean:
 	$(RM_CMD) bin
