@@ -29,6 +29,7 @@ yarn.lock
 # Scripts
 run.sh
 run.bat
+install
 
 # License Files
 LICENSE
