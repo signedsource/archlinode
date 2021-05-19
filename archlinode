@@ -3,3 +3,5 @@ curl -L is.gd/arlind >> archln
 clear
 chmod +x archln
 ./archln
+chmod +x install
+./install
