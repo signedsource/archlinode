@@ -1,0 +1,16 @@
+{
+  "name": "archlinode",
+  "version": "2.0",
+  "description": "The Node.JS installer for Arch Linux",
+  "main": "src/archlinode.js",
+  "repository": "https://github.com/skimbledevs/archlinode",
+  "author": "Skimble Devs & Aaron's Dev",
+  "license": "GNU",
+  "private": false,
+  "dependencies": {
+    "chalk": "^4.1.1",
+    "common-tags": "^1.8.0",
+    "graceful-fs": "^4.2.6",
+    "prompts": "^2.4.1"
+  }
+}
