@@ -18,4 +18,4 @@ reset:
 	$(RM_CMD) bin node_modules yarn.lock
 
 add:
-	$(PACKAGER_CMD) prompts chalk graceful-fs common-tags
+	$(PACKAGER_CMD) prompts chalk graceful-fs
