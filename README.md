@@ -59,3 +59,4 @@ For contributing, follow this steps
 [dwm](https://github.com/antoniosarosi/dwm)
 [graceful-fs](https://github.com/isaacs/node-graceful-fs)
 [pkg](https://github.com/vercel/pkg)
+[chalk](https://github.com/chalk/chalk)
