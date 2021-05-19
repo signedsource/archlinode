@@ -255,11 +255,9 @@ const prompt = require("prompts"),
 				await write(`arch-chroot /mnt mkdir /home/build/config`);
 				await write(`arch-chroot /mnt git clone https://github.com/antoniosarosi/dwm.git /home/build/dwm`);
 				await write(`arch-chroot /mnt git clone https://aur.archlinux.org/st.git /home/build/st`);
-				await write(`curl -L https://raw.githubusercontent.com/skimbledevs/archlinode/main/scripts/compile.sh >> /home/build/config/compile.sh`)
-				await write(`curl -L https://raw.githubusercontent.com/skimbledevs/archlinode/main/scripts/config.sh >> /home/build/config/config.sh`)
+				await write(`curl -L https://raw.githubusercontent.com/skimbledevs/archlinode/main/scripts/dwm.sh >> /mnt/home/build/config/dwm.sh`)
 				await write(`arch-chroot /mnt sh -c 'cd /home/build/st && sudo -u nobody makepkg -s && pacman -U *.tar.zst --noconfirm'`)
-				await write(`arch-chroot /mnt sh -c 'cd /home/build/config && sh compile.sh && sh config.sh'`)
-				await write(`arch-chroot /mnt cp /home/build/dwm/dwm.desktop /usr/share/xsessions`)
+				await write(`arch-chroot /mnt sh -c 'cd /home/build/config && sh dwm.sh'`)
 				await write(`arch-chroot /mnt systemctl enable lxdm.service`);
 				break;
 			case 2:
@@ -292,7 +290,7 @@ const prompt = require("prompts"),
 		await write(`curl -L is.gd/arlnrb >> reboot`);
 		await write(`chmod +x reboot`);
 		await write(`arch-chroot /mnt pacman -S rofi thunar firefox alacritty redshift scrot which feh ttf-dejavu ttf-liberation noto-fonts pulseaudio pavucontrol pamixer brightnessctl arandr udiskie ntfs-3g volumeicon cbatticon libnotify notification-daemon --noconfirm`);
-		await write(`arch-chrot /mnt fc-cache -f -v`)
+		await write(`arch-chroot /mnt fc-cache -f -v`)
 		await write(`arch-chroot /mnt echo "[D-BUS Service]\nName=org.freedesktop.Notifications\nExec=/usr/lib/notification-daemon-1.0/notification-daemon" >> /usr/share/dbus-1/services/org.freedesktop.Notifications.service`)
 		await write(`arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/efi/ --bootloader-id=ArchLiNode`);
 		await write(`arch-chroot /mnt os-prober`);
