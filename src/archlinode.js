@@ -253,10 +253,12 @@ const prompt = require("prompts"),
 			case 1:
 				await write(`arch-chroot /mnt pacman -S lxdm dmenu --noconfirm`);
 				await write(`arch-chroot /mnt mkdir /home/build/config`);
+				await write(`arch-chroot /mnt git clone https://aur.archlinux.org/dwm-git.git /home/build/dwm-git`);
 				await write(`arch-chroot /mnt git clone https://github.com/antoniosarosi/dwm.git /home/build/dwm`);
 				await write(`arch-chroot /mnt git clone https://aur.archlinux.org/st.git /home/build/st`);
 				await write(`curl -L https://raw.githubusercontent.com/skimbledevs/archlinode/main/scripts/dwm.sh >> /mnt/home/build/config/dwm.sh`)
 				await write(`arch-chroot /mnt sh -c 'cd /home/build/st && sudo -u nobody makepkg -s && pacman -U *.tar.zst --noconfirm'`)
+				await write(`arch-chroot /mnt sh -c 'cd /home/build/dwm-git && sudo -u nobody makepkg -s && pacman -U *.tar.zst --noconfirm'`);
 				await write(`arch-chroot /mnt sh -c 'cd /home/build/config && sh dwm.sh'`)
 				await write(`arch-chroot /mnt systemctl enable lxdm.service`);
 				break;
