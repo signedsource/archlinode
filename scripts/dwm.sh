@@ -4,7 +4,6 @@ cd /home/build/dwm
 sudo make clean install
 cd /home/build/dwm/dwmblocks
 sudo make clean install
-sudo cp /home/build/dwm/dwm.desktop /usr/share/xsessions
 mkdir -p ~/.local/share/dwm
 ln -s /home/build/dwm/autostart.sh ~/.local/share/dwm
 mkdir -p ~/.local/bin
