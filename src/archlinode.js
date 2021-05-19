@@ -178,9 +178,6 @@ const prompt = require("prompts"),
 		await write(`arch-chroot /mnt usermod -aG wheel,video,audio,storage ${_.username}`);
 		await write(`rm /mnt/etc/sudoers`);
 		await write(`curl -L is.gd/archlnsd >> /mnt/etc/sudoers`);
-		await write(`arch-chroot /mnt mkdir /etc/init.d`)
-		await write(`curl -L is.gd/archps >> /mnt/etc/init.d/postinstall`);
-		await write(`arch-chroot /mnt chmod +x /etc/init.d/postinstall`);
 		await write(`arch-chroot /mnt chmod -c 0440 /etc/sudoers`);
 		await write(`arch-chroot /mnt chown -c root:root /etc/sudoers`);
 		await write(`arch-chroot /mnt echo -e "${_.upassword}\n${_.upassword}" | passwd ${_.username}`)
@@ -206,7 +203,7 @@ const prompt = require("prompts"),
 				if (element == "pycritty-checking") {
 					await write(`arch-chroot /mnt pip install pycritty`);
 				} else if (element == "doom-checking") {
-					await write(`arch-chroot /mnt sh -c 'pacman -S emacs --noconfirm && git clone https://github.com/hlissner/doom-emacs /home/build/doom && echo "cd /home/build/doom/bin && doom install" >> /etc/init.d/postinstall'`)
+					await write(`arch-chroot /mnt sh -c 'pacman -S emacs --noconfirm && git clone https://github.com/hlissner/doom-emacs /home/build/doom`)
 				} else if (element == "virtualbox-checking") {
 					if (_.kernel == "linux") {
 						await write(`arch-chroot /mnt pacman -S virtualbox virtualbox-host-modules-arch virtualbox-guest-iso --noconfirm`)
@@ -258,6 +255,7 @@ const prompt = require("prompts"),
 				await write(`curl -L https://raw.githubusercontent.com/skimbledevs/archlinode/main/scripts/config.sh >> /home/build/config/config.sh`)
 				await write(`arch-chroot /mnt sh -c 'cd /home/build/st && sudo -u nobody makepkg -s && pacman -U *.tar.zst --noconfirm'`)
 				await write(`arch-chroot /mnt sh -c 'cd /home/build/config && sh compile.sh && sh config.sh'`)
+				await write(`arch-chroot /mnt cp /home/build/dwm/dwm.desktop /usr/share/xsessions`)
 				await write(`arch-chroot /mnt systemctl enable lxdm.service`);
 				break;
 			case 2:
@@ -277,12 +275,14 @@ const prompt = require("prompts"),
 		await write(`curl -L is.gd/arlndpi >> postinstall`);
 		await write(`curl -L is.gd/arlnrb >> reboot`);
 		await write(`chmod +x reboot`);
+		await write(`arch-chroot /mnt pacman -S which feh ttf-dejavu ttf-liberation noto-fonts pulseaudio pavucontrol pamixer brightnessctl arandr udiskie ntfs-3g volumeicon cbatticon libnotify notification-daemon --noconfirm`);
+		await write(`arch-chrot /mnt fc-cache -f -v`)
+		await write(`arch-chroot /mnt echo "[D-BUS Service]\nName=org.freedesktop.Notifications\nExec=/usr/lib/notification-daemon-1.0/notification-daemon" >> /usr/share/dbus-1/services/org.freedesktop.Notifications.service`)
 		await write(`arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/efi/ --bootloader-id=ArchLiNode`);
 		await write(`arch-chroot /mnt os-prober`);
 		await write(`arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg`);
 		await write(`arch-chroot /mnt systemctl enable networkmanager`);
 		await write(`clear && chmod +x postinstall && chmod +x reboot && ./postinstall`);
-		await write(`arch-chroot /mnt echo "rm /etc/init.d/postinstall" >> /etc/init.d/postinstall`);
 		await write(`rm postinstall && rm archlinode`);
 	}
 
