@@ -1,0 +1,37 @@
+# Logs
+logs
+*.log
+
+# Node
+node_modules/
+.npm
+.node_repl_history
+*.tgz
+npm-debug.log*
+
+# Yarn
+.yarn-integrity
+yarn.lock
+yarn-debug.log*
+yarn-error.log*
+
+# TypeScript
+*.tsbuildinfo
+dist/
+
+# ESLint
+.eslintcache
+
+# Yarn files
+.yarn-integrity
+yarn.lock
+
+# Scripts
+run.sh
+run.bat
+
+# License Files
+LICENSE
+
+# Database
+db.sqlite
