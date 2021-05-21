@@ -264,14 +264,17 @@ const prompt = require("prompts"),
 				break;
 			case 2:
 				await write(`arch-chroot /mnt pacman -S lxdm plasma kde-applications --noconfirm`);
+				await write(`arch-chroot /mnt yay -S nerd-fonts-ubuntu-mono`)
 				await write(`arch-chroot /mnt systemctl enable lxdm.service`);
 				break;
 			case 3:
 				await write(`arch-chroot /mnt pacman -S lxdm xfce4 xfce4-goodies xfce4-notifyd volumeicon --noconfirm`)
+				await write(`arch-chroot /mnt yay -S nerd-fonts-ubuntu-mono`)
 				await write(`arch-chroot /mnt systemctl enable lxdm.service`);
 				break;
 			case 4:
 				await write(`arch-chroot /mnt pacman -S gnome gdm --noconfirm`);
+				await write(`arch-chroot /mnt yay -S nerd-fonts-ubuntu-mono`)
 				await write(`arch-chroot /mnt systemctl enable gdm.service`);
 				break;
 			case 5:
