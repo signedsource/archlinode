@@ -223,7 +223,6 @@ const prompt = require("prompts"),
 					} else if (_.kernel != "linux") {
 						await write(`arch-chroot /mnt pacman -S virtualbox virtualbox-host-dkms virtualbox-guest-iso ${_.kernel}-headers --noconfirm`)
 					}
-					await write(`arch-chroot /mnt pacman -S virtualbox`)
 				} else {
 					packages += ` ${element}`
 				}
@@ -256,7 +255,7 @@ const prompt = require("prompts"),
 
 		if (_.desktop.length >= 1) {
 			await _.desktop.forEach(async element => {
-				switch (_.desktop) {
+				switch (element) {
 					case "qtile":
 						await write(`arch-chroot /mnt pacman -S qtile pacman-contrib --noconfirm`);
 						await write(`arch-chroot /mnt yay -S nerd-fonts-ubuntu-mono --noconfirm`);
