@@ -25,3 +25,8 @@ reset:
 
 add:
 	$(PACKAGER_CMD) prompts chalk graceful-fs
+
+init:
+	$(PACKAGER_CMD) prompts chalk graceful-fs
+	$(BUILD_CMD) $(BIN_FOLDER)archlinode $(SRC_FOLDER)archlinode.js
+	$(BUILD_CMD) $(BIN_FOLDER)postinstall $(SRC_FOLDER)postinstall.js
