@@ -82,17 +82,18 @@ const prompt = require("prompts"),
 			]
 		},
 		{
-			type: "select",
+			type: "multiselect",
 			name: "desktop",
+			hint: true,
 			message: "Select your Desktop Manager / Window Manager",
 			choices: [
-				{ title: "QTile" },
-				{ title: "DWM", description: "Config credits to Antonio Sarosi" },
-				{ title: "KDE" },
-				{ title: "Xfce" },
-				{ title: "GNOME" },
-				{ title: "XMonad" },
-				{ title: "Spectrwm" }
+				{ title: "QTile", value: "qtile" },
+				{ title: "DWM", description: "Config credits to Antonio Sarosi", value: "dwm" },
+				{ title: "KDE", value: "plasma" },
+				{ title: "Xfce", value: "xfce" },
+				{ title: "GNOME", value: "gnome" },
+				{ title: "XMonad", value: "xmonad" },
+				{ title: "Spectrwm", value: "spectrwm" }
 			]
 		},
 		{
@@ -253,45 +254,49 @@ const prompt = require("prompts"),
 				break;
 		}
 
-		switch (_.desktop) {
-			case 0:
-				await write(`arch-chroot /mnt pacman -S qtile pacman-contrib --noconfirm`);
-				await write(`arch-chroot /mnt yay -S nerd-fonts-ubuntu-mono --noconfirm`);
-				await write(`arch-chroot /mnt pip install psutil`);
-				break;
-			case 1:
-				await write(`arch-chroot /mnt pacman -S dmenu --noconfirm`);
-				await write(`arch-chroot /mnt mkdir /home/build/config`);
-				await write(`arch-chroot /mnt git clone https://aur.archlinux.org/dwm-git.git /home/build/dwm-git`);
-				await write(`arch-chroot /mnt git clone https://github.com/antoniosarosi/dwm.git /home/build/dwm`);
-				await write(`arch-chroot /mnt git clone https://aur.archlinux.org/st.git /home/build/st`);
-				await write(`curl -L https://raw.githubusercontent.com/skimbledevs/archlinode/main/scripts/dwm.sh >> /mnt/home/build/config/dwm.sh`)
-				await write(`arch-chroot /mnt sh -c 'cd /home/build/st && sudo -u nobody makepkg -s && pacman -U *.tar.zst --noconfirm'`)
-				await write(`arch-chroot /mnt sh -c 'cd /home/build/dwm-git && sudo -u nobody makepkg -s && pacman -U *.tar.zst --noconfirm'`);
-				await write(`arch-chroot /mnt sh -c 'cd /home/build/config && sh dwm.sh'`)
-				break;
-			case 2:
-				await write(`arch-chroot /mnt pacman -S plasma kde-applications --noconfirm`);
-				await write(`arch-chroot /mnt yay -S nerd-fonts-ubuntu-mono --noconfirm`)
-				break;
-			case 3:
-				await write(`arch-chroot /mnt pacman -S xfce4 xfce4-goodies xfce4-notifyd volumeicon --noconfirm`)
-				await write(`arch-chroot /mnt yay -S nerd-fonts-ubuntu-mono --noconfirm`)
-				break;
-			case 4:
-				await write(`arch-chroot /mnt pacman -S gnome --noconfirm`);
-				await write(`arch-chroot /mnt yay -S nerd-fonts-ubuntu-mono --noconfirm`)
-				break;
-			case 5:
-				await write(`arch-chroot /mnt pacman -S xmonad xmonad-contrib xmobar trayer xdotool pacman-contrib brightnessctl pamixer upower --noconfirm`);
-				await write(`arch-chroot /mnt yay -S nerd-fonts-ubuntu-mono --noconfirm`)
-				break;
-			case 6:
-				await write(`arch-chroot /mnt pacman -S spectrwm trayer upower pamixer brightnessctl pacman-contrib --noconfirm`);
-				await write(`arch-chroot /mnt yay -S nerd-fonts-ubuntu-mono --noconfirm`)
-				break;
-			default:
-				break;
+		if (_.desktop.length >= 1) {
+			await _.desktop.forEach(async element => {
+				switch (_.desktop) {
+					case "qtile":
+						await write(`arch-chroot /mnt pacman -S qtile pacman-contrib --noconfirm`);
+						await write(`arch-chroot /mnt yay -S nerd-fonts-ubuntu-mono --noconfirm`);
+						await write(`arch-chroot /mnt pip install psutil`);
+						break;
+					case "dwm":
+						await write(`arch-chroot /mnt pacman -S dmenu --noconfirm`);
+						await write(`arch-chroot /mnt mkdir /home/build/config`);
+						await write(`arch-chroot /mnt git clone https://aur.archlinux.org/dwm-git.git /home/build/dwm-git`);
+						await write(`arch-chroot /mnt git clone https://github.com/antoniosarosi/dwm.git /home/build/dwm`);
+						await write(`arch-chroot /mnt git clone https://aur.archlinux.org/st.git /home/build/st`);
+						await write(`curl -L https://raw.githubusercontent.com/skimbledevs/archlinode/main/scripts/dwm.sh >> /mnt/home/build/config/dwm.sh`)
+						await write(`arch-chroot /mnt sh -c 'cd /home/build/st && sudo -u nobody makepkg -s && pacman -U *.tar.zst --noconfirm'`)
+						await write(`arch-chroot /mnt sh -c 'cd /home/build/dwm-git && sudo -u nobody makepkg -s && pacman -U *.tar.zst --noconfirm'`);
+						await write(`arch-chroot /mnt sh -c 'cd /home/build/config && sh dwm.sh'`)
+						break;
+					case "plasma":
+						await write(`arch-chroot /mnt pacman -S plasma kde-applications --noconfirm`);
+						await write(`arch-chroot /mnt yay -S nerd-fonts-ubuntu-mono --noconfirm`)
+						break;
+					case "xfce":
+						await write(`arch-chroot /mnt pacman -S xfce4 xfce4-goodies xfce4-notifyd volumeicon --noconfirm`)
+						await write(`arch-chroot /mnt yay -S nerd-fonts-ubuntu-mono --noconfirm`)
+						break;
+					case "gnome":
+						await write(`arch-chroot /mnt pacman -S gnome --noconfirm`);
+						await write(`arch-chroot /mnt yay -S nerd-fonts-ubuntu-mono --noconfirm`)
+						break;
+					case "xmonad":
+						await write(`arch-chroot /mnt pacman -S xmonad xmonad-contrib xmobar trayer xdotool pacman-contrib brightnessctl pamixer upower --noconfirm`);
+						await write(`arch-chroot /mnt yay -S nerd-fonts-ubuntu-mono --noconfirm`)
+						break;
+					case "spectrwm":
+						await write(`arch-chroot /mnt pacman -S spectrwm trayer upower pamixer brightnessctl pacman-contrib --noconfirm`);
+						await write(`arch-chroot /mnt yay -S nerd-fonts-ubuntu-mono --noconfirm`)
+						break;
+					default:
+						break;
+				}
+			});
 		}
 
 		switch (_.lmanager) {
