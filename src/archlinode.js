@@ -191,7 +191,7 @@ const prompt = require("prompts"),
 				await write("arch-chroot /mnt pacman -S localectl set-x11-keymap en");
 				break;
 			case 1:
-				await write("arch-chroot /mnt localectl set-x11-keymap en");
+				await write("arch-chroot /mnt localectl set-x11-keymap es");
 				break;
 			default:
 				break;
