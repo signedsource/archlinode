@@ -65,7 +65,6 @@ const prompt = require("prompts"),
 			hint: true,
 			choices: [
 				{ title: 'Code OSS', value: 'code' },
-				{ title: 'Alacritty', value: 'alacritty' },
 				{ title: 'Konsole', value: 'konsole' },
 				{ title: 'Terminator', value: 'terminator' },
 				{ title: 'HTop', value: 'htop' },
@@ -211,7 +210,7 @@ const prompt = require("prompts"),
 		await write(`arch-chroot /mnt git clone https://aur.archlinux.org/yay-bin.git /home/build/yay`);
 		await write(`arch-chroot /mnt sh -c 'cd /home/build/yay && sudo -u nobody makepkg -s && pacman -U *.tar.zst --noconfirm'`);
 		
-		if (_.apps.length >= 0) {
+		if (_.apps.length >= 1) {
 			await _.apps.forEach(async element => {
 				if (element == "pycritty-checking") {
 					await write(`arch-chroot /mnt pip install pycritty`);
@@ -259,7 +258,6 @@ const prompt = require("prompts"),
 				await write(`arch-chroot /mnt pacman -S qtile pacman-contrib --noconfirm`);
 				await write(`arch-chroot /mnt yay -S nerd-fonts-ubuntu-mono --noconfirm`);
 				await write(`arch-chroot /mnt pip install psutil`);
-				await write(`arch-chroot /mnt systemctl enable lxdm.service`);
 				break;
 			case 1:
 				await write(`arch-chroot /mnt pacman -S dmenu --noconfirm`);
@@ -271,32 +269,26 @@ const prompt = require("prompts"),
 				await write(`arch-chroot /mnt sh -c 'cd /home/build/st && sudo -u nobody makepkg -s && pacman -U *.tar.zst --noconfirm'`)
 				await write(`arch-chroot /mnt sh -c 'cd /home/build/dwm-git && sudo -u nobody makepkg -s && pacman -U *.tar.zst --noconfirm'`);
 				await write(`arch-chroot /mnt sh -c 'cd /home/build/config && sh dwm.sh'`)
-				await write(`arch-chroot /mnt systemctl enable lxdm.service`);
 				break;
 			case 2:
 				await write(`arch-chroot /mnt pacman -S plasma kde-applications --noconfirm`);
 				await write(`arch-chroot /mnt yay -S nerd-fonts-ubuntu-mono --noconfirm`)
-				await write(`arch-chroot /mnt systemctl enable lxdm.service`);
 				break;
 			case 3:
 				await write(`arch-chroot /mnt pacman -S xfce4 xfce4-goodies xfce4-notifyd volumeicon --noconfirm`)
 				await write(`arch-chroot /mnt yay -S nerd-fonts-ubuntu-mono --noconfirm`)
-				await write(`arch-chroot /mnt systemctl enable lxdm.service`);
 				break;
 			case 4:
-				await write(`arch-chroot /mnt pacman -S gnome gdm --noconfirm`);
+				await write(`arch-chroot /mnt pacman -S gnome --noconfirm`);
 				await write(`arch-chroot /mnt yay -S nerd-fonts-ubuntu-mono --noconfirm`)
-				await write(`arch-chroot /mnt systemctl enable gdm.service`);
 				break;
 			case 5:
 				await write(`arch-chroot /mnt pacman -S xmonad xmonad-contrib xmobar trayer xdotool pacman-contrib brightnessctl pamixer upower --noconfirm`);
 				await write(`arch-chroot /mnt yay -S nerd-fonts-ubuntu-mono --noconfirm`)
-				await write(`arch-chroot /mnt systemctl enable lxdm.service`);
 				break;
 			case 6:
 				await write(`arch-chroot /mnt pacman -S spectrwm trayer upower pamixer brightnessctl pacman-contrib --noconfirm`);
 				await write(`arch-chroot /mnt yay -S nerd-fonts-ubuntu-mono --noconfirm`)
-				await write(`arch-chroot /mnt systemctl enable lxdm.service`);
 				break;
 			default:
 				break;
@@ -313,6 +305,7 @@ const prompt = require("prompts"),
 				break;
 			case 2:
 				await write(`arch-chroot /mnt yay -S ly --noconfirm`)
+				await write(`arch-chroot /mnt systemctl enable ly.service`)
 				break;
 			case 3:
 				await write(`arch-chroot /mnt pacman -S lightdm lightdm-gtk-greeter --noconfirm`);
