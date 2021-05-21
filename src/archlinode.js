@@ -211,7 +211,7 @@ const prompt = require("prompts"),
 		await write(`arch-chroot /mnt git clone https://aur.archlinux.org/yay-bin.git /home/build/yay`);
 		await write(`arch-chroot /mnt sh -c 'cd /home/build/yay && sudo -u nobody makepkg -s && pacman -U *.tar.zst --noconfirm'`);
 		
-		if (_.apps.size >= 0) {
+		if (_.apps.length >= 0) {
 			await _.apps.forEach(async element => {
 				if (element == "pycritty-checking") {
 					await write(`arch-chroot /mnt pip install pycritty`);
