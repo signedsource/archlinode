@@ -302,13 +302,6 @@ const prompt = require("prompts"),
 				break;
 		}
 
-		choices: [
-			{ title: "LXDM" },
-			{ title: "GDM" },
-			{ title: "Wayland" },
-			{ title: "LightDM" }
-		]
-
 		switch (_.lmanager) {
 			case 0:
 				await write(`arch-chroot /mnt pacman -S lxdm --noconfirm`);
