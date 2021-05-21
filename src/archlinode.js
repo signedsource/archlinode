@@ -215,7 +215,7 @@ const prompt = require("prompts"),
 				if (element == "pycritty-checking") {
 					await write(`arch-chroot /mnt pip install pycritty`);
 				} else if (element == "doom-checking") {
-					await write(`arch-chroot /mnt sh -c 'pacman -S emacs --noconfirm && git clone https://github.com/hlissner/doom-emacs /home/build/doom`)
+					await write(`arch-chroot /mnt sh -c 'pacman -S emacs --noconfirm && git clone https://github.com/hlissner/doom-emacs /home/build/doom'`)
 				} else if (element == "virtualbox-checking") {
 					if (_.kernel == "linux") {
 						await write(`arch-chroot /mnt pacman -S virtualbox virtualbox-host-modules-arch virtualbox-guest-iso --noconfirm`)
