@@ -236,16 +236,16 @@ const prompt = require("prompts"),
 			case 0:
 				const __ = await prompt([{ type: "confirm", title: "issupported", message: "Is your AMD Card supported by AMDGPU (with this I mean, that it isnt legacy)" }]);
 				if (__.issuported) {
-					await write(`arch-chroot /mnt pacman -S vulkan-radeon xf86-video-amdgpu lib32-vulkan-radeon --noconfirm`);
+					await write(`arch-chroot /mnt pacman -S vulkan-radeon xf86-video-amdgpu --noconfirm`);
 				} else if (!__.issuported) {
-					await write(`arch-chroot /mnt pacman -S xf86-video-ati mesa-vdpau lib32-mesa-vdpau --noconfirm`);
+					await write(`arch-chroot /mnt pacman -S xf86-video-ati mesa-vdpau --noconfirm`);
 				}
 				break;
 			case 1:
-				await write(`arch-chroot /mnt pacman -S nvidia lib32-nvidia-utils --noconfirm`)
+				await write(`arch-chroot /mnt pacman -S nvidia --noconfirm`)
 				break;
 			case 2:
-				await write(`arch-chroot /mnt pacman -S lib32-mesa xf86-video-intel vulkan-intel lib32-mesa --noconfirm`)
+				await write(`arch-chroot /mnt pacman -S xf86-video-intel vulkan-intel --noconfirm`)
 				break;
 			case 3:
 				await write(`arch-chroot /mnt pacman -S virtualbox-guest-utils xf86-video-vmware ${_.kernel}-headers --noconfirm`)
@@ -258,7 +258,6 @@ const prompt = require("prompts"),
 				switch (element) {
 					case "qtile":
 						await write(`arch-chroot /mnt pacman -S qtile pacman-contrib --noconfirm`);
-						await write(`arch-chroot /mnt yay -S nerd-fonts-ubuntu-mono --noconfirm`);
 						await write(`arch-chroot /mnt pip install psutil`);
 						break;
 					case "dwm":
@@ -274,29 +273,26 @@ const prompt = require("prompts"),
 						break;
 					case "plasma":
 						await write(`arch-chroot /mnt pacman -S plasma kde-applications --noconfirm`);
-						await write(`arch-chroot /mnt yay -S nerd-fonts-ubuntu-mono --noconfirm`)
 						break;
 					case "xfce":
 						await write(`arch-chroot /mnt pacman -S xfce4 xfce4-goodies xfce4-notifyd volumeicon --noconfirm`)
-						await write(`arch-chroot /mnt yay -S nerd-fonts-ubuntu-mono --noconfirm`)
 						break;
 					case "gnome":
 						await write(`arch-chroot /mnt pacman -S gnome --noconfirm`);
-						await write(`arch-chroot /mnt yay -S nerd-fonts-ubuntu-mono --noconfirm`)
 						break;
 					case "xmonad":
 						await write(`arch-chroot /mnt pacman -S xmonad xmonad-contrib xmobar trayer xdotool pacman-contrib brightnessctl pamixer upower --noconfirm`);
-						await write(`arch-chroot /mnt yay -S nerd-fonts-ubuntu-mono --noconfirm`)
 						break;
 					case "spectrwm":
 						await write(`arch-chroot /mnt pacman -S spectrwm trayer upower pamixer brightnessctl pacman-contrib --noconfirm`);
-						await write(`arch-chroot /mnt yay -S nerd-fonts-ubuntu-mono --noconfirm`)
 						break;
 					default:
 						break;
 				}
 			});
 		}
+
+		await write(`arch-chroot /mnt sh -c 'git clone https://aur.archlinux.org/nerd-fonts-ubuntu-mono.git /home/build/nerdfonts && cd /home/build/nerdfonts && makepkg -s && pacman -U *.tar.zst'`)
 
 		switch (_.lmanager) {
 			case 0:
@@ -308,7 +304,8 @@ const prompt = require("prompts"),
 				await write(`arch-chroot /mnt systemctl enable gdm.service`);
 				break;
 			case 2:
-				await write(`arch-chroot /mnt yay -S ly --noconfirm`)
+				await write(`arch-chroot /mnt git clone https://aur.archlinux.org/ly.git /home/build/ly`);
+				await write(`arch-chroot /mnt sh -c 'cd /home/build/ly && sudo -u nobody makepkg -s && pacman -U *.tar.zst'`)
 				await write(`arch-chroot /mnt systemctl enable ly.service`)
 				break;
 			case 3:
@@ -328,7 +325,7 @@ const prompt = require("prompts"),
 		await write(`arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/efi/ --bootloader-id=ArchLiNode`);
 		await write(`arch-chroot /mnt os-prober`);
 		await write(`arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg`);
-		await write(`arch-chroot /mnt systemctl enable networkmanager`);
+		await write(`arch-chroot /mnt systemctl enable NetworkManager`);
 		await write(`clear && chmod +x postinstall && chmod +x reboot && ./postinstall`);
 		await write(`rm postinstall && rm archlinode`);
 	}
