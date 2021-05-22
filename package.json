@@ -10,6 +10,7 @@
   "dependencies": {
     "chalk": "^4.1.1",
     "graceful-fs": "^4.2.6",
+    "pkg": "^5.2.0",
     "prompts": "^2.4.1"
   }
 }
