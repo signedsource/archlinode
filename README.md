@@ -9,6 +9,8 @@ To use this installer type this command into the command line `curl -L is.gd/arc
 This will download the file, make it executable, clear the screen, and run the installer program.
 When it has finished picking your options and creating the install script, you can run it using the `./install` command. (If you use the command given to you on the past, it will run it when you pass in all the options needed)
 
+<p>Hey just an advice, don't be stupid and partition the disk before you run the installer</p>
+
 # How does this work
 This is based on this logic
 1. The user selects what he wants
