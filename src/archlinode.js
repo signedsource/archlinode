@@ -195,7 +195,7 @@ const prompt = require("prompts"),
 		await write(`arch-chroot /mnt echo -e "${_.upassword}\n${_.upassword}" | passwd ${_.username}`)
 		await write(`arch-chroot /mnt echo -e "${_.rpassword}\n${_.rpassword}" | passwd`);
 		await write(`rm -rf /mnt/etc/pacman.conf`);
-		await write(`curl -L is.gd/arpcf >> /mnt/etc/pacman.conf`);
+		await write(`curl -L is.gd/arlnpcf >> /mnt/etc/pacman.conf`);
 		await write(`arch-chroot /mnt chmod -c 644 /etc/pacman.conf`);
 		await write(`arch-chroot /mnt chown -c root:root /etc/pacman.conf`);
 		await write(`arch-chroot /mnt pacman -Syu`);
