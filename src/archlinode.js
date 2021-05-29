@@ -30,20 +30,24 @@ const prompt = require("prompts"),
 					title: "Linux",
 					description:
 						"Vanilla Linux kernel and modules, with a few patches applied.",
+					value: "linux"
 				},
 				{
 					title: "Linux Hardened",
 					description:
 						"A security-focused Linux kernel applying a set of hardening patches to mitigate kernel and userspace exploits.",
+					value: "linux-hardened"
 				},
 				{
 					title: "Linux LTS",
 					description: "Long-term support (LTS) Linux kernel and modules.",
+					value: "linux-lts"
 				},
 				{
 					title: "Linux Zen",
 					description:
-						"Result of a collaborative effort of kernel hackers to provide the best Linux kernel possible for everyday systems.",
+						"Result of a collaborative effort of kernel hackers to provide the best Linux kernel possible for everyday systems.",				
+					value: "linux-zen"
 				},
 			],
 		},
@@ -62,7 +66,7 @@ const prompt = require("prompts"),
 			type: 'multiselect',
 			name: 'apps',
 			message: 'Select the apps or packs of apps that you want',
-			hint: true,
+			hint: "Doom doesn't install!",
 			choices: [
 				{ title: 'Code OSS', value: 'code' },
 				{ title: 'Konsole', value: 'konsole' },
@@ -84,7 +88,7 @@ const prompt = require("prompts"),
 		{
 			type: "multiselect",
 			name: "desktop",
-			hint: true,
+			hint: "Spectrwm isn't tested!",
 			message: "Select your Desktop Manager / Window Manager",
 			choices: [
 				{ title: "QTile", value: "qtile" },
@@ -142,8 +146,20 @@ const prompt = require("prompts"),
 		await fs.appendFileSync("install", `${_}\n`);
 	}
 
+	const pacman = async _ => {
+		await write(`arch-chroot /mnt pacman -S ${_} --noconfirm --needed`);
+	}
+
+	const pacstrap = async _ => {
+		await write(`pacstrap /mnt ${_}`)
+	}
+
+	const pip = async _ => {
+		await write(`arch-chroot /mnt pip install ${_}`);
+	}
+
 	const install = async (_) => {
-		let packages = "arch-chroot /mnt pacman -S";
+		let packages = "";
 
 		switch (_.keymap) {
 			case 0:
@@ -156,29 +172,12 @@ const prompt = require("prompts"),
 				break;
 		}
 
-		switch (_.kernel) {
-			case 0:
-				_.kernel = "linux"
-				break;
-			case 1:
-				_.kernel = "linux-hardened"
-				break;
-			case 2:
-				_.kernel = "linux-lts"
-				break;
-			case 3:
-				_.kernel = "linux-zen"
-				break;
-			default:
-				break;
-		}
-
 		await write("timedatectl set-ntp true");
 		await write(`mkfs.ext4 /dev/sda${_.sda}`);
 		await write(`mount /dev/sda${_.sda} /mnt`);
 		await write(`mkdir /mnt/efi`);
 		await write(`mount /dev/sda${_.efi} /mnt/efi`);
-		await write(`pacstrap /mnt base ${_.kernel} linux-firmware`)
+		await pacstrap(`base ${_.kernel} linux-firmware`);
 		await write(`genfstab -U /mnt >> /mnt/etc/fstab`)
 		await write(`echo ${_.hostname} >> /mnt/etc/hostname`);
 		await write(`echo 127.0.0.1 localhost >> /mnt/etc/hosts`);
@@ -194,12 +193,17 @@ const prompt = require("prompts"),
 		await write(`arch-chroot /mnt chmod -c 0440 /etc/sudoers`);
 		await write(`arch-chroot /mnt chown -c root:root /etc/sudoers`);
 		await write(`arch-chroot /mnt echo -e "${_.upassword}\n${_.upassword}" | passwd ${_.username}`)
-		await write(`arch-chroot /mnt echo -e "${_.rpassword}\n${_.rpassword}" | passwd`)
-		await write(`arch-chroot /mnt pacman -S dhcpcd xterm networkmanager nano thunar python python-pip python3 base-devel grub os-prober efibootmgr gcc cmake make git curl libx11 libxft xorg xorg-server xorg-xinit terminus-font mesa --noconfirm`);
+		await write(`arch-chroot /mnt echo -e "${_.rpassword}\n${_.rpassword}" | passwd`);
+		await write(`rm -rf /mnt/etc/pacman.conf`);
+		await write(`curl -L is.gd/arpcf >> /mnt/etc/pacman.conf`);
+		await write(`arch-chroot /mnt chmod -c 644 /etc/pacman.conf`);
+		await write(`arch-chroot /mnt chown -c root:root /etc/pacman.conf`);
+		await write(`arch-chroot /mnt pacman -Syu`);
+		await pacman(`dhcpcd xterm networkmanager nano thunar python python-pip python3 base-devel grub os-prober efibootmgr gcc cmake make git curl libx11 libxft xorg xorg-server xorg-xinit terminus-font mesa`)
 		
 		switch (_.keymap) {
 			case 0:
-				await write("arch-chroot /mnt pacman -S localectl set-x11-keymap en");
+				await write("arch-chroot /mnt localectl set-x11-keymap en");
 				break;
 			case 1:
 				await write("arch-chroot /mnt localectl set-x11-keymap es");
@@ -214,41 +218,35 @@ const prompt = require("prompts"),
 		if (_.apps.length >= 1) {
 			await _.apps.forEach(async element => {
 				if (element == "pycritty-checking") {
-					await write(`arch-chroot /mnt pip install pycritty`);
+					await pip(`pycritty`);
 				} else if (element == "doom-checking") {
 					await write(`arch-chroot /mnt sh -c 'pacman -S emacs --noconfirm && git clone https://github.com/hlissner/doom-emacs /home/build/doom'`)
 				} else if (element == "virtualbox-checking") {
 					if (_.kernel == "linux") {
-						await write(`arch-chroot /mnt pacman -S virtualbox virtualbox-host-modules-arch virtualbox-guest-iso --noconfirm`)
+						await pacman(`virtualbox virtualbox-host-modules-arch virtualbox-guest-iso`)
 					} else if (_.kernel != "linux") {
-						await write(`arch-chroot /mnt pacman -S virtualbox virtualbox-host-dkms virtualbox-guest-iso ${_.kernel}-headers --noconfirm`)
+						await pacman(`virtualbox virtualbox-host-dkms virtualbox-guest-iso ${_.kernel}-headers`)
 					}
 				} else {
 					packages += ` ${element}`
 				}
 			});
-
-			packages += " --noconfirm";
-			await write(`${packages}`);
+			
+			await pacman(`${packages}`);
 		}
 
 		switch (_.gpudriver) {
 			case 0:
-				const __ = await prompt([{ type: "confirm", title: "issupported", message: "Is your AMD Card supported by AMDGPU (with this I mean, that it isnt legacy)" }]);
-				if (__.issuported) {
-					await write(`arch-chroot /mnt pacman -S vulkan-radeon xf86-video-amdgpu --noconfirm`);
-				} else if (!__.issuported) {
-					await write(`arch-chroot /mnt pacman -S xf86-video-ati mesa-vdpau --noconfirm`);
-				}
+				await pacman(`xf86-video-ati mesa-vdpau lib32-mesa vulkan-radeon lib32-vulkan-radeon vulkan-icd-loader lib32-vulkan-icd-loader`)
 				break;
 			case 1:
-				await write(`arch-chroot /mnt pacman -S nvidia --noconfirm`)
+				await pacman(`nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings vulkan-icd-loader lib32-vulkan-icd-loader`);
 				break;
 			case 2:
-				await write(`arch-chroot /mnt pacman -S xf86-video-intel vulkan-intel --noconfirm`)
+				await pacman(`xf86-video-intel vulkan-intel lib32-mesa lib32-vulkan-intel vulkan-icd-loader lib32-vulkan-icd-loader`);
 				break;
 			case 3:
-				await write(`arch-chroot /mnt pacman -S virtualbox-guest-utils xf86-video-vmware ${_.kernel}-headers --noconfirm`)
+				await pacman(`virtualbox-guest-utils xf86-video-vmware ${_.kernel}-headers`)
 			default:
 				break;
 		}
@@ -257,11 +255,11 @@ const prompt = require("prompts"),
 			await _.desktop.forEach(async element => {
 				switch (element) {
 					case "qtile":
-						await write(`arch-chroot /mnt pacman -S qtile pacman-contrib --noconfirm`);
-						await write(`arch-chroot /mnt pip install psutil`);
+						await pacman(`qtile pacman-contrib`);
+						await pip(`psutil`);
 						break;
 					case "dwm":
-						await write(`arch-chroot /mnt pacman -S dmenu --noconfirm`);
+						await pacman(`dmenu`);
 						await write(`arch-chroot /mnt mkdir /home/build/config`);
 						await write(`arch-chroot /mnt git clone https://aur.archlinux.org/dwm-git.git /home/build/dwm-git`);
 						await write(`arch-chroot /mnt git clone https://github.com/antoniosarosi/dwm.git /home/build/dwm`);
@@ -272,19 +270,19 @@ const prompt = require("prompts"),
 						await write(`arch-chroot /mnt sh -c 'cd /home/build/config && sh dwm.sh'`)
 						break;
 					case "plasma":
-						await write(`arch-chroot /mnt pacman -S plasma kde-applications --noconfirm`);
+						await pacman(`plasma kde-applications`)
 						break;
 					case "xfce":
-						await write(`arch-chroot /mnt pacman -S xfce4 xfce4-goodies xfce4-notifyd volumeicon --noconfirm`)
+						await pacman(`xfce4 xfce4-goodies xfce4-notifyd volumeicon`);
 						break;
 					case "gnome":
-						await write(`arch-chroot /mnt pacman -S gnome --noconfirm`);
+						await pacman(`gnome`);
 						break;
 					case "xmonad":
-						await write(`arch-chroot /mnt pacman -S xmonad xmonad-contrib xmobar trayer xdotool pacman-contrib brightnessctl pamixer upower --noconfirm`);
+						await pacman(`xmonad xmonad-contrib xmobar trayer xdotool pacman-contrib brightnessctl pamixer upower`);
 						break;
 					case "spectrwm":
-						await write(`arch-chroot /mnt pacman -S spectrwm trayer upower pamixer brightnessctl pacman-contrib --noconfirm`);
+						await pacman(`spectrwm trayer upower pamixer brightnessctl pacman-contrib`);
 						break;
 					default:
 						break;
@@ -296,11 +294,11 @@ const prompt = require("prompts"),
 
 		switch (_.lmanager) {
 			case 0:
-				await write(`arch-chroot /mnt pacman -S lxdm --noconfirm`);
+				await pacman(`lxdm`);
 				await write(`arch-chroot /mnt systemctl enable lxdm.service`);
 				break;
 			case 1:
-				await write(`arch-chroot /mnt pacman -S gdm --noconfirm`);
+				await pacman(`gdm`);
 				await write(`arch-chroot /mnt systemctl enable gdm.service`);
 				break;
 			case 2:
@@ -309,7 +307,7 @@ const prompt = require("prompts"),
 				await write(`arch-chroot /mnt systemctl enable ly.service`)
 				break;
 			case 3:
-				await write(`arch-chroot /mnt pacman -S lightdm lightdm-gtk-greeter --noconfirm`);
+				await pacman(`lightdm lightdm-gtk-greeter`);
 				await write(`arch-chroot /mnt systemctl enable lightdm.service`);
 				break;
 			default:
@@ -319,7 +317,7 @@ const prompt = require("prompts"),
 		await write(`curl -L is.gd/arlndpi >> postinstall`);
 		await write(`curl -L is.gd/arlnrb >> reboot`);
 		await write(`chmod +x reboot`);
-		await write(`arch-chroot /mnt pacman -S rofi thunar firefox alacritty redshift scrot which feh ttf-dejavu ttf-liberation noto-fonts pulseaudio pavucontrol pamixer brightnessctl arandr udiskie ntfs-3g volumeicon cbatticon libnotify notification-daemon --noconfirm`);
+		await pacman(`rofi thunar firefox alacritty redshift scrot which feh ttf-dejavu ttf-liberation noto-fonts pulseaudio pavucontrol pamixer brightnessctl arandr udiskie ntfs-3g volumeicon cbatticon libnotify notification-daemon`)
 		await write(`arch-chroot /mnt fc-cache -f -v`)
 		await write(`arch-chroot /mnt echo "[D-BUS Service]\nName=org.freedesktop.Notifications\nExec=/usr/lib/notification-daemon-1.0/notification-daemon" >> /usr/share/dbus-1/services/org.freedesktop.Notifications.service`)
 		await write(`arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/efi/ --bootloader-id=ArchLiNode`);

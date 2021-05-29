@@ -2,6 +2,7 @@ BUILD_CMD=npx pkg -t linux -o
 RUN_CMD=node
 RM_CMD=rm -rf
 PACKAGER_CMD=yarn add
+UPDATE_CMD=yarn
 BIN_FOLDER=bin/
 SRC_FOLDER=src/
 
@@ -30,3 +31,6 @@ init:
 	$(PACKAGER_CMD) prompts chalk graceful-fs pkg
 	$(BUILD_CMD) $(BIN_FOLDER)archlinode $(SRC_FOLDER)archlinode.js
 	$(BUILD_CMD) $(BIN_FOLDER)postinstall $(SRC_FOLDER)postinstall.js
+
+update:
+	$(UPDATE_CMD)
