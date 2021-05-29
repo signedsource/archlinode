@@ -29,7 +29,7 @@ For contributing, follow this steps
 > I have installed Arch Linux with this install script, what can I do now to get my system fully customized?
 
 <p>Well, in dependance of what did you select (WM / DM), you should check how to configure your WM or DM</p>
-<p>but hey, im here to help you, so im giving you they keymap for QTile an DWM (so you dont stress out searching it)</p>
+<p>but hey, im here to help you, so im giving you they keymap for QTile and DWM (so you dont stress out searching it)</p>
 
 | QTILE   | DWM     |
 |---------|---------|
