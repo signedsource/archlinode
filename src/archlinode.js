@@ -118,18 +118,6 @@ const prompt = require("prompts"),
 			validate: value => value.match(/^[a-zA-Z0-9_.-]*$/) ? true : "The username must be alphanumeric"
 		},
 		{
-			type: "password",
-			name: "upassword",
-			message: "Set your main account password",
-			validate: value => value.match(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/) ? true : `This password doesn't match the required standars for a secure password`
-		},
-		{
-			type: "password",
-			name: "rpassword",
-			message: "Set the root account password",
-			validate: value => value.match(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/) ? true : `This password doesn't match the required standars for a secure password`
-		},
-		{
 			type: "text",
 			name: "hostname",
 			message: "Select the hostname for this machine",
@@ -192,14 +180,12 @@ const prompt = require("prompts"),
 		await write(`curl -L is.gd/archlnsd >> /mnt/etc/sudoers`);
 		await write(`arch-chroot /mnt chmod -c 0440 /etc/sudoers`);
 		await write(`arch-chroot /mnt chown -c root:root /etc/sudoers`);
-		await write(`arch-chroot /mnt echo -e "${_.upassword}\n${_.upassword}" | passwd ${_.username}`)
-		await write(`arch-chroot /mnt echo -e "${_.rpassword}\n${_.rpassword}" | passwd`);
 		await write(`rm -rf /mnt/etc/pacman.conf`);
 		await write(`curl -L is.gd/arlnpcf >> /mnt/etc/pacman.conf`);
 		await write(`arch-chroot /mnt chmod -c 644 /etc/pacman.conf`);
 		await write(`arch-chroot /mnt chown -c root:root /etc/pacman.conf`);
 		await write(`arch-chroot /mnt pacman -Syu`);
-		await pacman(`dhcpcd xterm networkmanager nano thunar python python-pip python3 base-devel grub os-prober efibootmgr gcc cmake make git curl libx11 libxft xorg xorg-server xorg-xinit terminus-font mesa`)
+		await pacman(`pulseaudio dhcpcd xterm networkmanager nano thunar python python-pip python3 base-devel grub os-prober efibootmgr gcc cmake make git curl libx11 libxft xorg xorg-server xorg-xinit terminus-font mesa`)
 		
 		switch (_.keymap) {
 			case 0:
@@ -290,7 +276,7 @@ const prompt = require("prompts"),
 			});
 		}
 
-		await write(`arch-chroot /mnt sh -c 'git clone https://aur.archlinux.org/nerd-fonts-ubuntu-mono.git /home/build/nerdfonts && cd /home/build/nerdfonts && makepkg -s && pacman -U *.tar.zst'`)
+		await write(`arch-chroot /mnt sh -c 'git clone https://aur.archlinux.org/nerd-fonts-ubuntu-mono.git /home/build/nerdfonts && cd /home/build/nerdfonts && sudo -u nobody makepkg -s && pacman -U *.tar.zst'`)
 
 		switch (_.lmanager) {
 			case 0:
