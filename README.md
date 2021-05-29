@@ -38,9 +38,9 @@ For contributing, follow this steps
 # Testing
 > WM / DM
 
-| QTILE      | DWM        | XFCE4      | KDE                                           | GNOME      | Completed |
-|------------|------------|------------|-----------------------------------------------|------------|-----------|
-| Works Fine | Works Fine | Works Fine | Tested (takes some time to load at first boot) | Works Fine | True      |
+| QTILE      | DWM        | XFCE4      | KDE                                            | GNOME      | XMonad    | Spectrwm   | Completed |
+|------------|------------|------------|------------------------------------------------|------------|-----------|------------|----------|
+| Works Fine | Works Fine | Works Fine | Tested (takes some time to load at first boot) | Works Fine | Works Fine| Works Fine | True      |
 
 > Kernels
 
