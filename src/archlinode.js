@@ -104,7 +104,7 @@ const prompt = require("prompts"),
 		{
 			type: "multiselect",
 			name: "desktop",
-			hint: "Spectrwm isn't tested!",
+			hint: "Spectrwm needs some dependencies! - XMonad isn't pre configured! (If you use XMonad or Spectrwm, please install it among other Desktop enviroment, of preference, i recommend XFCE)",
 			message: "Select your Desktop Manager / Window Manager",
 			choices: [
 				{ title: "QTile", value: "qtile" },
