@@ -21,6 +21,23 @@ const prompt = require("prompts"),
 			message: "Select the number ID of your EFI partition"
 		},
 		{
+			type: "multiselect",
+			name: "format",
+			message: "What partitions should we format?",
+			choices: [
+				{
+					title: "Linux Partition",
+					description: "You should format this always - Where all your Linux files live",
+					value: "linux"
+				},
+				{
+					title: "EFI Partition",
+					description: "Boot files",
+					value: "efi"
+				}
+			]
+		},
+		{
 			type: "select",
 			name: "kernel",
 			message: "Select a Kernel",
@@ -130,7 +147,7 @@ const prompt = require("prompts"),
 	}
 
 	const run = async _ => {
-		await execSync(`${_}`, (error, stdout, stderr) => {
+		/** await execSync(`${_}`, (error, stdout, stderr) => {
 			if (error) {
 				console.log(chalk.redBright("[ERROR / IGNORE]") + `An error ocurred, if it isn't anything strange, you should ignore it\nError: ${error}`);
 			}
@@ -140,7 +157,8 @@ const prompt = require("prompts"),
 			} catch (err) {
 				console.log(chalk.redBright("[IGNORE] ") + "Couldn't get callback answer");
 			}
-		});
+		}); */
+		await console.log(_);
 	}
 
 	const pacman = async _ => {
@@ -169,12 +187,19 @@ const prompt = require("prompts"),
 				break;
 		}
 
+		await _.format.forEach(async element => {
+			if (element == "linux") {
+				await run(`mkfs.ext4 /dev/sda${_.sda}`);
+			} else if (element == "efi") {
+				await run(`mkfs.fat -F 32 /dev/sda${_.efi}`);
+			}
+		});
+
 		await run("timedatectl set-ntp true");
-		await run(`mkfs.ext4 /dev/sda${_.sda}`);
 		await run(`mount /dev/sda${_.sda} /mnt`);
 		await run(`mkdir /mnt/efi`);
 		await run(`mount /dev/sda${_.efi} /mnt/efi`);
-		await pacstrap(`base ${_.kernel} linux-firmware`);
+		await pacstrap(`base ${_.kernel} linux-firmware xdg-user-dirs xf86-input-synaptics`);
 		await run(`genfstab -U /mnt >> /mnt/etc/fstab`)
 		await run(`echo ${_.hostname} >> /mnt/etc/hostname`);
 		await run(`echo 127.0.0.1 localhost >> /mnt/etc/hosts`);
@@ -184,7 +209,7 @@ const prompt = require("prompts"),
 		await run(`arch-chroot /mnt hwclock --systohc`)
 		await run(`arch-chroot /mnt locale-gen`);
 		await run(`arch-chroot /mnt useradd --create-home ${_.username}`);
-		await run(`arch-chroot /mnt usermod -aG wheel,video,audio,storage ${_.username}`);
+		await run(`arch-chroot /mnt usermod -aG wheel,video,audio,storage,power,optical,scanner,lp,games ${_.username}`);
 		await run(`rm /mnt/etc/sudoers`);
 		await run(`curl -L is.gd/archlnsd >> /mnt/etc/sudoers`);
 		await run(`arch-chroot /mnt chmod -c 0440 /etc/sudoers`);
@@ -262,7 +287,7 @@ const prompt = require("prompts"),
 						await run(`curl -L https://raw.githubusercontent.com/skimbledevs/archlinode/main/scripts/dwm.sh >> /mnt/home/build/config/dwm.sh`)
 						await run(`arch-chroot /mnt sh -c 'cd /home/build/st && sudo -u nobody makepkg -s && pacman -U *.tar.zst --noconfirm'`)
 						await run(`arch-chroot /mnt sh -c 'cd /home/build/dwm-git && sudo -u nobody makepkg -s && pacman -U *.tar.zst --noconfirm'`);
-						await run(`arch-chroot /mnt sh -c 'cd /home/build/config && sh dwm.sh'`)
+						await run(`arch-chroot /mnt sh -c 'cd /home/build/config && bash dwm.sh'`)
 						break;
 					case "plasma":
 						await pacman(`plasma kde-applications`)
@@ -309,8 +334,8 @@ const prompt = require("prompts"),
 				break;
 		}
 		
-		await run(`curl -L is.gd/arlndpi >> postinstall`);
-		await run(`curl -L is.gd/arlnrb >> reboot`);
+		await run(`curl -L https://raw.githubusercontent.com/skimbledevs/archlinode/main/src/postinstall.js >> postinstall.js`);
+		await run(`curl -L https://raw.githubusercontent.com/skimbledevs/archlinode/main/src/reboot >> reboot`);
 		await run(`chmod +x reboot`);
 		await pacman(`rofi thunar firefox alacritty redshift scrot which feh ttf-dejavu ttf-liberation noto-fonts pulseaudio pavucontrol pamixer brightnessctl arandr udiskie ntfs-3g volumeicon cbatticon libnotify notification-daemon`)
 		await run(`arch-chroot /mnt fc-cache -f -v`)
@@ -319,9 +344,11 @@ const prompt = require("prompts"),
 		await run(`arch-chroot /mnt os-prober`);
 		await run(`arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg`);
 		await run(`arch-chroot /mnt systemctl enable NetworkManager`);
-		await run(`clear && chmod +x postinstall && chmod +x reboot && ./postinstall`);
+		await run(`node postinstall.js`);
 		await run(`rm postinstall && rm archlinode`);
 	}
+
+	console.log(chalk.greenBright("[~] Remember that you must have already partitioned your disk!"));
 
 	let _ = await prompt([{ type: "confirm", name: "net", message: "Are you connected to the internet using a ethernet / LAN cable?"}], { onCancel });
 
@@ -330,7 +357,7 @@ const prompt = require("prompts"),
 			_ = await prompt(questions, { onCancel });
 			install(_).then(() => {
 				execSync('chmod +x install', (error, stdout, stderr) => {
-					if (error) throw new Error(error);
+					if (stderr) throw new Error(stderr);
 				});
 			});
 			break;
@@ -347,7 +374,7 @@ const prompt = require("prompts"),
 				_ = await prompt(questions, { onCancel });
 				install(_).then(() => {
 					execSync('chmod +x install', (error, stdout, stderr) => {
-						if (error) throw new Error(error);
+						if (stderr) throw new Error(stderr);
 					});
 				});
 			}, 30000)
