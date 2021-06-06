@@ -1,6 +1,6 @@
 const prompt = require("prompts"),
 	chalk = require("chalk"),
-	{ exec, execSync } = require("child_process");
+	{ execSync } = require("child_process");
 
 (async function () {
 	const questions = [
@@ -147,7 +147,7 @@ const prompt = require("prompts"),
 	}
 
 	const run = async _ => {
-		/** await execSync(`${_}`, (error, stdout, stderr) => {
+		await execSync(`${_}`, (error, stdout, stderr) => {
 			if (error) {
 				console.log(chalk.redBright("[ERROR / IGNORE]") + `An error ocurred, if it isn't anything strange, you should ignore it\nError: ${error}`);
 			}
@@ -157,8 +157,7 @@ const prompt = require("prompts"),
 			} catch (err) {
 				console.log(chalk.redBright("[IGNORE] ") + "Couldn't get callback answer");
 			}
-		}); */
-		await console.log(_);
+		})
 	}
 
 	const pacman = async _ => {
