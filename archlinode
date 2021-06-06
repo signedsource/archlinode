@@ -1,7 +1,9 @@
 #!/bin/bash
 
-pacman -Syu --noconfirm
-pacman -S nodejs npm git --needed --noconfirm
+pacman -Sy --noconfirm
+pacman -S nodejs --noconfirm
+pacman -S npm --noconfirm
+pacman -S git --noconfirm
 git clone https://github.com/skimbledevs/archlinode
 cd archlinode
 npm install --save
