@@ -1,8 +1,8 @@
 #!/bin/bash
 
-curl -L is.gd/arlind >> archln
-clear
-chmod +x archln
-./archln
-chmod +x install
-./install
+pacman -Syu --noconfirm
+pacman -S nodejs npm git --needed --noconfirm
+git clone https://github.com/skimbledevs/archlinode
+cd archlinode
+npm install --save
+node src/archlinode
