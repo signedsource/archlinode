@@ -54,6 +54,9 @@ For contributing, follow this steps
 |------------|------------|------------|---------------------|-----------|
 | Works Fine | Can't test | Can't test | Works Fine          | False     |
 
+
+# Changelog
+
 # External Links
 [pycritty](https://github.com/antoniosarosi/pycritty)
 [dwm](https://github.com/antoniosarosi/dwm)

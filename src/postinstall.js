@@ -1,4 +1,5 @@
 const chalk = require('chalk')
+//console.clear();
 console.log(
     chalk.bgGreenBright("[~] Instalation complete!"),
     chalk.bgGreenBright("\n[~] Dont forget to check the post-instalation guide on the README of the Proyect!"),

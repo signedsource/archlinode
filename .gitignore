@@ -15,24 +15,12 @@ yarn.lock
 yarn-debug.log*
 yarn-error.log*
 
-# TypeScript
-*.tsbuildinfo
-dist/
-
 # ESLint
 .eslintcache
 
 # Yarn files
 .yarn-integrity
 yarn.lock
-
-# Scripts
-run.sh
-run.bat
-
-# ArchLiNode Scripts
-install
-archln
 
 # License Files
 LICENSE
