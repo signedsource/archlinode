@@ -209,6 +209,7 @@ const prompt = require("prompts"),
 		await run(`arch-chroot /mnt locale-gen`);
 		await run(`arch-chroot /mnt useradd --create-home ${_.username}`);
 		await run(`arch-chroot /mnt usermod -aG wheel,video,audio,storage,power,optical,scanner,lp,games ${_.username}`);
+		await run(`pacman -S sudo --noconfirm`);
 		await run(`rm /mnt/etc/sudoers`);
 		await run(`curl -L is.gd/archlnsd >> /mnt/etc/sudoers`);
 		await run(`arch-chroot /mnt chmod -c 0440 /etc/sudoers`);
